@@ -1,0 +1,13 @@
+# Ignore environment variables file
+.env
+
+# Ignore Python virtual environment folder
+venv/
+
+# Optional: Ignore common Python cache and build files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.sqlite3
