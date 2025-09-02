@@ -11,3 +11,6 @@ __pycache__/
 *.pyd
 *.log
 *.sqlite3
+token.json
+credentials.json
+*.json  # Optional: Ignore all JSON if you have more sensitive ones
