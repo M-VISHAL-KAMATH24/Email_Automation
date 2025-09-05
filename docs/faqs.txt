@@ -1,0 +1,5 @@
+FAQ 1: For billing issues, check your invoice status at support.example.com/billing. Contact billing@company.com if unresolved. Source: Billing Policy Doc v2.
+FAQ 2: Support requests for technical problems should include error codes and screenshots. Response time is 24-48 hours. Source: Support Guidelines.
+FAQ 3: Sales inquiries about new courses: Visit courses.example.com for details. Discounts available for bulk enrollments. Source: Sales Brochure.
+FAQ 4: Urgent matters: Call +1-800-123-4567 immediately. Do not email for emergencies. Source: Emergency Protocol.
+FAQ 5: General FYI: No action needed for newsletters; unsubscribe at bottom of email. Source: Newsletter Policy.
