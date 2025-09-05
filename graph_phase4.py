@@ -58,11 +58,12 @@ class EmailState(TypedDict):
     summary: Optional[str]
     label: Optional[str]
     confidence: Optional[float]
-    snippets: Optional[List[dict]]  # Retrieved chunks with sources
-    retrieval_weak: Optional[bool]  # Flag for weak retrieval
-    draft: Optional[str]  # Generated draft response
-    draft_id: Optional[str]  # Gmail draft ID
-    approved: Optional[bool]  # Human approval flag
+    snippets: Optional[List[dict]]
+    retrieval_weak: Optional[bool]
+    draft: Optional[str]
+    draft_id: Optional[str]
+    approved: Optional[bool]
+    sender_email: Optional[str]  # Add this line for the original sender
 
 # Load and split FAQs (ensure docs/faqs.txt exists)
 loader = TextLoader("docs/faqs.txt")
@@ -237,7 +238,7 @@ async def create_gmail_draft(state: dict) -> dict:
     body = parts[1] if len(parts) > 1 else ""
     
     message = MIMEText(body)
-    message['to'] = "recipient@example.com"  # TODO: Extract from original email
+    message['to'] = state.get('sender_email', 'default@sender.com')  # Use actual sender email here
     message['subject'] = f"Re: {state['subject']}"
     
     raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
@@ -336,10 +337,14 @@ app = graph.compile(checkpointer=checkpointer)
 async def test_graph():
     emails = fetch_unread_emails()  # From oauth_fetch.py
     for email in emails:
+        # Use get with fallback to prevent KeyError if 'from' is missing
+        sender = email.get("from", "default@sender.com")
+
         initial_state = {
             "thread_id": email["thread_id"],
             "subject": email["subject"],
             "body": email["body"],
+            "sender_email": sender,
             "summary": None,
             "label": None,
             "confidence": None,
