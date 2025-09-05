@@ -1,4 +1,6 @@
 import os.path
+import os
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -6,7 +8,11 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 # Scopes: Read-only for now (expand later for drafts/send)
-SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
+SCOPES = [
+    "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/gmail.compose",  # For drafting
+    "https://www.googleapis.com/auth/gmail.send"      # For sending
+]
 
 def fetch_unread_emails(max_results=5):
     """Fetches and returns a list of the last N unread emails as dicts."""
@@ -23,6 +29,8 @@ def fetch_unread_emails(max_results=5):
             flow = InstalledAppFlow.from_client_secrets_file(
                 "credentials.json", SCOPES
             )
+            os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = 'true'
+
             creds = flow.run_local_server(port=8080)
         # Save tokens for next run
         with open("token.json", "w") as token:
