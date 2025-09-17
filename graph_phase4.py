@@ -99,6 +99,12 @@ async def summarize_email(state: dict) -> dict:
 # Classify node: Rules + LLM for label/confidence
 async def classify_intent(state: dict) -> dict:
     # Simple rules first (e.g., keyword-based) - expanded for your emails
+    sender_email = state.get("sender_email", "").lower()
+    personal_contacts = ["kamathvishal26@gmail.com", "vishalkamath69@gmail.com"]
+    if any(contact in sender_email for contact in personal_contacts):
+        state['label'] = "personal"
+        state['confidence'] = 1.0  # Be 100% confident it's personal
+        return state
     subject_lower = state['subject'].lower()
     body_lower = state['body'].lower()
     if any(word in subject_lower or word in body_lower for word in ["urgent", "emergency", "immediate"]):
@@ -229,26 +235,42 @@ def build_gmail_service(creds):
 
 # Create Gmail draft node
 async def create_gmail_draft(state: dict) -> dict:
+    """
+    Create a Gmail draft that replies to the original sender.
+    """
     creds = Credentials.from_authorized_user_file("token.json", SCOPES)
     service = build_gmail_service(creds)
     
-    # Parse draft (assume state['draft'] is "Subject: X\nBody: Y")
-    parts = state['draft'].split("\nBody: ", 1)
-    subject = parts[0].replace("Subject: ", "")
-    body = parts[1] if len(parts) > 1 else ""
+    draft_content = state.get("draft", "")
+    subject_line = f"Re: {state['subject']}"
+    body_text = draft_content
+
+    # Handle cases where the AI provides a full "Subject/Body" structure
+    if "\nBody: " in draft_content:
+        parts = draft_content.split("\nBody: ", 1)
+        subject_line = parts[0].replace("Subject: ", "")
+        body_text = parts[1] if len(parts) > 1 else ""
     
-    message = MIMEText(body)
-    message['to'] = state.get('sender_email', 'default@sender.com')  # Use actual sender email here
-    message['subject'] = f"Re: {state['subject']}"
+    # Build the MIME message
+    message = MIMEText(body_text)
+    message["to"] = state.get("sender_email", "default@sender.com")
+    message["subject"] = subject_line
     
     raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
+    
     try:
-        draft = service.users().drafts().create(userId="me", body={'message': {'raw': raw}}).execute()
-        state['draft_id'] = draft['id']
-        print(f"Draft created: ID {state['draft_id']}")
+        draft_obj = (
+            service.users()
+            .drafts()
+            .create(userId="me", body={"message": {"raw": raw}})
+            .execute()
+        )
+        state["draft_id"] = draft_obj["id"]
+        print(f"Draft created with content: ID {state['draft_id']}")
     except HttpError as e:
-        state['draft_id'] = None
+        state["draft_id"] = None
         print(f"Error creating draft: {e}")
+        
     return state
 
 # Approval gate node (human-in-the-loop)
@@ -304,10 +326,14 @@ graph.add_conditional_edges(
 graph.add_edge("needs_review", END)
 
 # Phase 3/4 conditional for retrieve/draft
+# In the post_classify_condition function
+
 def post_classify_condition(state: dict) -> Literal["retrieve_snippets", "end"]:
-    if state['label'] in ["support", "billing"] and state['confidence'] >= 0.85:
+    # Add "personal" to this list
+    if state['label'] in ["support", "billing", "personal"] and state['confidence'] >= 0.85:
         return "retrieve_snippets"
     return "end"
+
 
 graph.add_conditional_edges(
     "classify_intent",

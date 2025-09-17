@@ -1,5 +1,83 @@
-FAQ 1: For billing issues, check your invoice status at support.example.com/billing. Contact billing@company.com if unresolved. Source: Billing Policy Doc v2.
-FAQ 2: Support requests for technical problems should include error codes and screenshots. Response time is 24-48 hours. Source: Support Guidelines.
-FAQ 3: Sales inquiries about new courses: Visit courses.example.com for details. Discounts available for bulk enrollments. Source: Sales Brochure.
-FAQ 4: Urgent matters: Call +1-800-123-4567 immediately. Do not email for emergencies. Source: Emergency Protocol.
-FAQ 5: General FYI: No action needed for newsletters; unsubscribe at bottom of email. Source: Newsletter Policy.
+### General Notifications & Updates
+
+Q: How should I respond to a notification about my LinkedIn profile activity or views?
+A: Thank you for the update on my profile's performance. I appreciate you keeping me informed.
+
+Q: How do I handle general news digests or weekly updates from services like LinkedIn?
+A: No action or reply is needed for general news digests. These are for informational purposes only. Thank you for keeping me in the loop.
+
+### Courses, Certifications, and Competitions
+
+Q: What should I say when I receive an invitation to a competition or event, like one from Kaggle?
+A: Thank you for the invitation and for thinking of me. I will review the details of the competition and get back to you if it aligns with my current focus.
+
+Q: How should I reply to an announcement about a new course, webinar, or certification program (like from NPTEL or Coursera)?
+A: Thank you for sharing this information about the new program. I appreciate you keeping me updated on these learning opportunities.
+
+### Account & Security
+
+Q: How should I respond to a security alert from Google or another service about a new sign-in?
+A: Thank you for the security notification. I have received the alert and will take the necessary steps to review my account's activity immediately. Security is a top priority.
+
+### Standard Business Inquiries
+
+Q: What is the policy for billing inquiries, invoices, or payment questions?
+A: For any questions related to billing, invoices, or payments, please forward the details to our accounting team. They will be able to assist you further.
+
+Q: Where can a user get support for a technical issue?
+A: If you are facing a technical problem, please describe the issue in detail, including any error messages you have seen. Our support team is available to help. You can also check our support documentation for common solutions.
+
+### General Business & Professional Inquiries
+
+Q: How to respond to a meeting request or scheduling inquiry?
+A: Thank you for reaching out. Please let me know what time works best for you, and I will check my calendar. I am generally available on weekday afternoons.
+
+Q: What is the standard reply for a new project proposal or collaboration request?
+A: Thank you for the proposal. This looks interesting, and I will review the details thoroughly. I will get back to you with my thoughts by the end of the week.
+
+Q: How do I handle a request for information or a follow-up on a project?
+A: I have received your request for an update. I am currently compiling the information and will send it over to you as soon as it is ready.
+
+### Personal & Casual Emails
+
+Q: How should I reply to a casual email from a friend or family member checking in?
+A: Thanks so much for reaching out! It's great to hear from you. I'm a bit busy at the moment, but I'll get back to you properly as soon as I can. Hope you're doing well!
+
+Q: A friend is trying to make plans or organize an event. How should I respond?
+A: That sounds like a great idea! Thanks for organizing. Please keep me in the loop with the final details, and I will do my best to be there.
+
+Q: A friend sent me a funny video, link, or meme. How should I respond?
+A: Haha, that's great! Thanks for sharing. I'll check it out soon.
+
+### Recruitment, Job Applications & Networking
+
+Q: How do I respond to a recruiter who has reached out with a potential job opportunity?
+A: Thank you for reaching out with this opportunity. It sounds interesting. While I am not actively looking for a new role at the moment, I am always open to hearing about exciting positions. I will review the details and get back to you.
+
+Q: How should I reply to a networking request on LinkedIn or via email?
+A: Thank you for connecting. I'm happy to connect with fellow professionals in our field. I look forward to learning more about your work.
+
+Q: How do I handle an automated rejection email after a job application?
+A: No reply is necessary for automated rejection emails.
+
+### Courses, Competitions & Automated Notifications
+
+Q: What should I say when I receive an invitation to a competition or event, like one from Kaggle?
+A: Thank you for the invitation and for thinking of me. I will review the details of the event and get back to you if it aligns with my current focus.
+
+Q: How should I reply to an announcement about a new course, webinar, or certification program?
+A: Thank you for sharing this information about the new program. I appreciate you keeping me updated on these learning opportunities.
+
+Q: How should I respond to a notification about my LinkedIn profile activity or views?
+A: Thank you for the update on my profile's performance. I appreciate you keeping me informed. No further action is needed.
+
+### Account, Security & Billing
+
+Q: How should I respond to a security alert from Google or another service about a new sign-in?
+A: Thank you for the security notification. I have received the alert and will take the necessary steps to review my account's activity immediately. Security is a top priority.
+
+Q: What is the policy for billing inquiries, invoices, or payment questions?
+A: For any questions related to billing, invoices, or payments, please forward the details to our accounting team. They will be able to assist you further.
+
+Q: How do I handle a receipt or order confirmation email?
+A: Thank you for the confirmation. No reply is necessary.
