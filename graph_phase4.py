@@ -51,6 +51,8 @@ def save_cache(cache):
         pickle.dump(cache, f)
 
 # State: What gets passed between nodes (expandable later)
+from datetime import datetime  # add this import at the top
+
 class EmailState(TypedDict):
     thread_id: str
     subject: str
@@ -63,7 +65,8 @@ class EmailState(TypedDict):
     draft: Optional[str]
     draft_id: Optional[str]
     approved: Optional[bool]
-    sender_email: Optional[str]  # Add this line for the original sender
+    sender_email: Optional[str]
+    sent_time: Optional[str]  # new field to track sent time
 
 # Load and split FAQs (ensure docs/faqs.txt exists)
 loader = TextLoader("docs/faqs.txt")
@@ -283,16 +286,27 @@ async def approval_gate(state: dict) -> dict:
     return state
 
 # Send email node
+from datetime import datetime
+
 async def send_email(state: dict) -> dict:
+    """Send the email draft through Gmail API and record the timestamp."""
     if not state.get('draft_id'):
+        print("No draft to send, skipping...")
         return state
+
     creds = Credentials.from_authorized_user_file("token.json", SCOPES)
     service = build_gmail_service(creds)
     try:
         sent = service.users().drafts().send(userId="me", body={'id': state['draft_id']}).execute()
         print(f"Email sent: ID {sent['id']}")
+
+        # Record time when sent
+        state['sent_time'] = datetime.now().isoformat()
+        print(f"Sent time recorded: {state['sent_time']}")
     except HttpError as e:
         print(f"Error sending: {e}")
+        state['sent_time'] = None
+
     return state
 
 # Checkpoint for persistence
