@@ -29,6 +29,9 @@ from oauth_fetch import fetch_unread_emails
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=api_key, temperature=0)
+# Number of days to wait before sending a follow-up email if no reply is received
+FOLLOW_UP_DAYS = 5
+
 
 # Updated scopes for Phase 4
 SCOPES = [
@@ -232,6 +235,30 @@ async def draft_reply(state: dict) -> dict:
     state['draft'] = response.content.strip()  # e.g., "Subject: Re: Your Query\nBody: Dear [Name], ..."
     return state
 
+# Add this new async function to your graph_phase4.py file
+
+from typing import Literal
+
+async def draft_followup(state: dict) -> dict:
+    """
+    Draft a polite follow-up email reminder if the sender hasn't replied after N days.
+    """
+    # Access your configured follow-up wait period
+    FOLLOW_UP_DAYS = 5  # or import from config if defined elsewhere
+
+    prompt = PromptTemplate.from_template(
+        """You are an AI assistant drafting a polite, friendly follow-up email as a reminder.
+        The original message was sent {days} days ago and no reply has been received yet.
+        Write a brief email to nudge the recipient for a response.
+        
+        Follow-up email draft:"""
+    )
+    
+    response = await llm.ainvoke(prompt.invoke({"days": FOLLOW_UP_DAYS}))
+    state['draft'] = response.content.strip()
+    return state
+
+
 # Helper to build Gmail service
 def build_gmail_service(creds):
     return build("gmail", "v1", credentials=creds)
@@ -309,6 +336,57 @@ async def send_email(state: dict) -> dict:
 
     return state
 
+from datetime import datetime, timedelta
+
+async def check_unreplied_threads(state: dict) -> dict:
+    """
+    Checks if any sent email thread (with sent_time older than FOLLOW_UP_DAYS)
+    has no reply. If none replied, triggers follow-up draft generation.
+    """
+
+    # Hardcode or import your waiting period config
+    FOLLOW_UP_DAYS = 5
+
+    # If there's no sent_time, no need to check
+    if 'sent_time' not in state or not state['sent_time']:
+        state['followup_needed'] = False
+        return state
+
+    sent_dt = datetime.fromisoformat(state['sent_time'])
+    now = datetime.now()
+
+    # Calculate if waiting period exceeded
+    if now - sent_dt < timedelta(days=FOLLOW_UP_DAYS):
+        # Not time yet to follow up
+        state['followup_needed'] = False
+        return state
+
+    # If waiting period exceeded, check Gmail API for replies in thread
+    creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+    service = build_gmail_service(creds)
+
+    try:
+        # List messages in the thread
+        thread = service.users().threads().get(userId="me", id=state['thread_id']).execute()
+        messages = thread.get('messages', [])
+
+        # Count messages in thread - if >1 means reply posted (original + reply)
+        if len(messages) > 1:
+            # Reply detected; no follow-up needed
+            state['followup_needed'] = False
+            return state
+        else:
+            # No replies yet, follow-up needed
+            state['followup_needed'] = True
+            print(f"Follow-up needed for thread: {state['thread_id']}")
+            # Optionally reset or update flags specific to follow-ups here
+    except Exception as e:
+        print(f"Failed to check thread replies: {e}")
+        state['followup_needed'] = False
+
+    return state
+
+
 # Checkpoint for persistence
 checkpointer = MemorySaver()
 
@@ -323,6 +401,8 @@ graph.add_node("draft_reply", draft_reply)
 graph.add_node("create_gmail_draft", create_gmail_draft)
 graph.add_node("approval_gate", approval_gate)
 graph.add_node("send_email", send_email)
+graph.add_node("draft_followup", draft_followup)
+
 
 # Edges
 graph.add_edge(START, "summarize_email")
